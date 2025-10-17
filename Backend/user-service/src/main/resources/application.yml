@@ -5,6 +5,12 @@ spring:
   application:
     name: user-service
 
+  main:
+    web-application-type: servlet
+
+  config:
+    import: "optional:configserver:"   # Fixes the Config Server error
+
   datasource:
     url: jdbc:mysql://localhost:3306/aitask_user
     username: root
@@ -15,10 +21,14 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
   cloud:
     config:
-      uri: http://localhost:8888
+      enabled: true                    # Enables Config Client (optional)
+      fail-fast: false                 # Don't crash if Config Server is down
 
 eureka:
   client:
@@ -26,3 +36,13 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true            # Use IP instead of hostname for registration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info           # Expose actuator endpoints

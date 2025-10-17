@@ -9,6 +9,6 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/Chetan-Purkar/aitask-config.git
+          uri: https://github.com/Chetan-Purkar/ai-powered-task-management-system.git
           clone-on-start: true
           default-label: main  # Use 'main' if your GitHub repo default branch is 'main'

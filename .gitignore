@@ -1,0 +1,61 @@
+# =============================
+# Eclipse / IDE files
+# =============================
+*.classpath
+*.project
+*.settings/
+.metadata/
+.vscode/
+
+# =============================
+# Java / Spring Boot build files
+# =============================
+**/target/
+**/bin/
+**/build/
+**/out/
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+
+# =============================
+# Maven / Gradle
+# =============================
+.mvn/
+.gradle/
+dependency-reduced-pom.xml
+release.properties
+
+# =============================
+# Logs
+# =============================
+*.log
+logs/
+*.tmp
+*.cache
+
+# =============================
+# Node / Frontend
+# =============================
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =============================
+# OS / System files
+# =============================
+.DS_Store
+Thumbs.db
+
+# =============================
+# Other temporary files
+# =============================
+*.bak
+*.swp

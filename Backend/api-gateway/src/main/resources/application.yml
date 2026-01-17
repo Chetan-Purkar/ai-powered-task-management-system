@@ -4,23 +4,32 @@ server:
 spring:
   application:
     name: api-gateway
+
   cloud:
     gateway:
       routes:
         - id: auth-service
-          uri: lb://AUTH-SERVICE
+          uri: http://localhost:8081
           predicates:
             - Path=/auth/**
+
+        - id: auth-service-internal
+          uri: http://localhost:8081
+          predicates:
+            - Path=/internal/auth/**
+
+        - id: admin-service
+          uri: http://localhost:8082
+          predicates: 
+            - Path=/admin/**
+
         - id: user-service
-          uri: lb://USER-SERVICE
+          uri: http://localhost:9002
           predicates:
             - Path=/users/**
-        - id: project-service
-          uri: lb://PROJECT-SERVICE
-          predicates:
-            - Path=/projects/**
+
         - id: task-service
-          uri: lb://TASK-SERVICE
+          uri: http://localhost:9004
           predicates:
             - Path=/tasks/**
 
@@ -30,3 +39,10 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway,health,info
+

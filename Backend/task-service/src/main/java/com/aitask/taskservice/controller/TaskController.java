@@ -29,6 +29,7 @@ public class TaskController {
             @RequestHeader(value = "X-Roles", required = false) String role
     ) {
     	
+    	System.out.println("Username " + username + " Role" + role);
         task.setCreatedBy(userId); // enforce creator
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -71,6 +72,7 @@ public class TaskController {
             @RequestHeader("X-Roles") String role
     ) {
         taskService.changeStatus(taskId, status, userId, role);
+        
         return ResponseEntity.ok().build();
     }
 

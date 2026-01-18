@@ -25,9 +25,11 @@ public class TaskService {
     // ---------------- CREATE TASK (ADMIN ONLY) ----------------
     @Transactional
     public Task createTask(Task task, Long userId, String role) {
-        if (!role.contains("ROLE_ADMIN")) {
+    	System.out.println("role = " + role);
+        if (!role.contains("ADMIN")) {
             throw new SecurityException("Only ADMIN can create tasks");
         }
+        
 
         task.setStatus(TaskStatus.TODO);
         task.setCreatedBy(userId);
@@ -41,7 +43,7 @@ public class TaskService {
     // ---------------- UPDATE TASK (ADMIN ONLY) ----------------
     @Transactional
     public Task updateTask(Long taskId, Task updatedTask, Long userId, String role) {
-        if (!role.contains("ROLE_ADMIN")) {
+        if (!role.contains("ADMIN")) {
             throw new SecurityException("Only ADMIN can update tasks");
         }
 
@@ -59,7 +61,7 @@ public class TaskService {
     // ---------------- UPDATE PRIORITY (ADMIN ONLY) ----------------
     @Transactional
     public void updatePriority(Long taskId, TaskPriority priority, Long userId, String role) {
-        if (!role.contains("ROLE_ADMIN")) {
+        if (!role.contains("ADMIN")) {
             throw new SecurityException("Only ADMIN can update task priority");
         }
 
@@ -79,7 +81,7 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
         // USER can update only assigned task
-        if (role.contains("ROLE_USER") && !task.getAssignedTo().equals(userId)) {
+        if (role.contains("USER") && !task.getAssignedTo().equals(userId)) {
             throw new SecurityException("User can update only assigned task status");
         }
 

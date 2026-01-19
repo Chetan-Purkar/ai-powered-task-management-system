@@ -18,7 +18,11 @@ import reactor.core.publisher.Mono;
 @Order(-2)
 public class GatewayGlobalErrorHandler implements ErrorWebExceptionHandler {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
+
+    public GatewayGlobalErrorHandler(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
@@ -40,22 +44,21 @@ public class GatewayGlobalErrorHandler implements ErrorWebExceptionHandler {
                 status.name(),
                 message,
                 exchange.getRequest().getURI().getPath(),
-                LocalDateTime.now()
+                LocalDateTime.now().toString()
         );
 
         byte[] bytes;
         try {
             bytes = mapper.writeValueAsBytes(response);
         } catch (Exception e) {
-            bytes = ("{\"message\":\"Serialization Error\"}").getBytes();
             exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+            bytes = "{\"message\":\"Serialization Failed\"}".getBytes();
         }
 
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
         exchange.getResponse().setStatusCode(status);
 
-        return exchange.getResponse().writeWith(
-                Mono.just(exchange.getResponse().bufferFactory().wrap(bytes))
-        );
+        return exchange.getResponse()
+                .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
     }
 }

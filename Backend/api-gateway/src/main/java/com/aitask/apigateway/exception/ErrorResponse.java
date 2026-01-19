@@ -8,9 +8,9 @@ public class ErrorResponse {
     private String error;
     private String message;
     private String path;
-    private LocalDateTime timestamp;
+    private String timestamp;
     
-	public ErrorResponse(int status, String error, String message, String path, LocalDateTime timestamp) {
+	public ErrorResponse(int status, String error, String message, String path, String timestamp) {
 		this.status = status;
 		this.error = error;
 		this.message = message;
@@ -34,7 +34,7 @@ public class ErrorResponse {
 		return path;
 	}
 
-	public LocalDateTime getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
 	

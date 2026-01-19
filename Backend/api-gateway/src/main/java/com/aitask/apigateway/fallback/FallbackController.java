@@ -23,7 +23,7 @@ public class FallbackController {
                 "SERVICE_UNAVAILABLE",
                 "Task Service is DOWN. Please try again later.",
                 request.getURI().getPath(),
-                LocalDateTime.now()
+                LocalDateTime.now().toString()
         );
 
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);

@@ -19,7 +19,7 @@ public class Snippet {
 	                    "DOWNSTREAM_SERVICE_ERROR",
 	                    ex.getMessage(),
 	                    request.getRequestURI(),
-	                    LocalDateTime.now()
+	                    LocalDateTime.now().toString()
 	            ));
 	}
 	

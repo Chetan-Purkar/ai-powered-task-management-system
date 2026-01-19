@@ -2,6 +2,7 @@ package com.aitask.taskservice.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import com.aitask.taskservice.enums.TaskStatus;
 import com.aitask.taskservice.repository.TaskActivityRepository;
 import com.aitask.taskservice.repository.TaskRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,7 +29,7 @@ public class TaskService {
     public Task createTask(Task task, Long userId, String role) {
     	System.out.println("role = " + role);
         if (!role.contains("ADMIN")) {
-            throw new SecurityException("Only ADMIN can create tasks");
+            throw new AccessDeniedException("Only ADMIN can create tasks");
         }
         
 
@@ -44,11 +46,11 @@ public class TaskService {
     @Transactional
     public Task updateTask(Long taskId, Task updatedTask, Long userId, String role) {
         if (!role.contains("ADMIN")) {
-            throw new SecurityException("Only ADMIN can update tasks");
+            throw new AccessDeniedException("Only ADMIN can update tasks");
         }
 
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
 
         task.setTitle(updatedTask.getTitle());
         task.setDescription(updatedTask.getDescription());
@@ -62,11 +64,11 @@ public class TaskService {
     @Transactional
     public void updatePriority(Long taskId, TaskPriority priority, Long userId, String role) {
         if (!role.contains("ADMIN")) {
-            throw new SecurityException("Only ADMIN can update task priority");
+            throw new AccessDeniedException("Only ADMIN can update task priority");
         }
 
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
 
         task.setPriority(priority);
 
@@ -78,11 +80,11 @@ public class TaskService {
     public void changeStatus(Long taskId, TaskStatus status, Long userId, String role) {
 
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
 
         // USER can update only assigned task
         if (role.contains("USER") && !task.getAssignedTo().equals(userId)) {
-            throw new SecurityException("User can update only assigned task status");
+            throw new AccessDeniedException("User can update only assigned task status");
         }
 
         task.setStatus(status);

@@ -1,4 +1,4 @@
-package com.aitask.adminservice.dto;
+package com.aitask.adminservice.exception;
 
 import java.time.LocalDateTime;
 

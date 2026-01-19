@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.aitask.adminservice.dto.ErrorResponse;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 public class Snippet {

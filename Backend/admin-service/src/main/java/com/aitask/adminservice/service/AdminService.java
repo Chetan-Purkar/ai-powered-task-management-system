@@ -32,8 +32,12 @@ public class AdminService {
         }
 
         // 2️⃣ Fetch admin details from auth-service
-        CreateAdminProfileDTO authUser = authClient.getUserById(adminId);
-        // If you have a separate DTO, use that instead (recommended)
+        CreateAdminProfileDTO authUser;
+        try {
+            authUser = authClient.getUserById(adminId);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Admin not found in Auth Service");
+        }
 
         // 3️⃣ Build AdminProfile entity
         AdminProfile adminProfile = AdminProfile.builder()
@@ -60,6 +64,10 @@ public class AdminService {
     
     public AdminProfile updateAdminProfile(Long adminId, AdminProfile updatedProfile) {
         AdminProfile existingProfile = getAdminProfile(adminId);
+        
+        if (updatedProfile == null) {
+            throw new IllegalArgumentException("Profile data cannot be null");
+        }
 
         existingProfile.setName(updatedProfile.getName());
         existingProfile.setPhoneNumber(updatedProfile.getPhoneNumber());

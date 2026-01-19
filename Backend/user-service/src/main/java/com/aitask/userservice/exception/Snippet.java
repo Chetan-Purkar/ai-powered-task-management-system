@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.aitask.userservice.dto.ErrorResponse;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 public class Snippet {
@@ -21,7 +19,7 @@ public class Snippet {
 	                    "DOWNSTREAM_SERVICE_ERROR",
 	                    ex.getMessage(),
 	                    request.getRequestURI(),
-	                    LocalDateTime.now()
+	                    LocalDateTime.now().toString()
 	            ));
 	}
 	

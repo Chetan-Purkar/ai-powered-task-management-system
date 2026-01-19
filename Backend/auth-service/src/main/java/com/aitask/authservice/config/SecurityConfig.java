@@ -17,7 +17,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import java.util.List;
-
 @Configuration
 public class SecurityConfig {
 
@@ -31,29 +30,25 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
 
         return identifier -> userRepository
-                .findByUsername(identifier)
-                .or(() -> userRepository.findByEmail(identifier))
+                .findByUsernameOrEmail(identifier, identifier)   // 🔥 BEST PRACTICE
                 .map(user -> {
 
-                    Role role = user.getRole(); // SINGLE ROLE
+                    Role role = user.getRole();
 
                     if (role == null) {
-                        throw new RuntimeException("User has no role assigned");
+                        throw new UsernameNotFoundException("User role not assigned");
                     }
 
                     return new org.springframework.security.core.userdetails.User(
-                            user.getUsername(),      // principal
-                            user.getPassword(),      // hashed password
-                            List.of(
-                                new SimpleGrantedAuthority("ROLE_" + role.name())
-                            )
+                            user.getUsername(),          // principal
+                            user.getPassword(),          // encoded password
+                            List.of(new SimpleGrantedAuthority("ROLE_" + role.name()))
                     );
                 })
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found")
                 );
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -76,19 +71,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/auth/login",
-                                "/auth/register",
-                                "/auth/public-key",
-                                "/actuator/**",
-                                "/internal/**" 
-                        ).permitAll()
-                        .requestMatchers("/internal/auth/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(Customizer.withDefaults());
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(
+                            "/auth/login",
+                            "/auth/register",
+                            "/auth/public-key",
+                            "/actuator/**",
+                            "/internal/**"
+                    ).permitAll()
+                    .requestMatchers("/internal/auth/**").hasRole("ADMIN")
+                    .anyRequest().authenticated()
+            )
+            .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

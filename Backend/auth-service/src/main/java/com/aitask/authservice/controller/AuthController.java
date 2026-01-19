@@ -40,31 +40,33 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest req) {
-    	
-    	System.out.println("AUTH-SERVICE → login() called");
-        System.out.println("Username: " + req.getIdentifier());
-        // Authenticate user
+
+        String identifier = req.getIdentifier();
+
+        // Authenticate (Spring Security)
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                		req.getIdentifier(),
+                        identifier,
                         req.getPassword()
                 )
         );
 
-        // Load user from DB
-        UserAuth user = userRepository.findByUsername(req.getIdentifier())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        // Generate token with roles
+        // Fetch user by username OR email
+        UserAuth user = userRepository.findByUsernameOrEmail(identifier, identifier)
+                .orElseThrow(() ->
+                        new jakarta.persistence.EntityNotFoundException(
+                            "User not found with username/email: " + identifier
+                        )
+                );
+
+        // Generate JWT
         String token = jwtProvider.generateToken(user);
 
-        System.out.println("Login user + token sends	" + token);
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(new AuthResponse(token));
-
     }
-    
+
     
     
 
